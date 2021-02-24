@@ -6,10 +6,11 @@ simple shapes used to represent a gantry axis
 
 
 class Rectangle:
-    def __init__(self, width, height, depth):
-        self.width = width
-        self.height = height
-        self.depth = depth
+    def __init__(self, depth, width, height):
+        self.depth  = depth     # x axis
+        self.width  = width     # y axis
+        self.height = height    # z axis
+
 
 class Circle:
     def __init__(self, radius):
