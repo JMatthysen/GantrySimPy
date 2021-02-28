@@ -25,11 +25,11 @@ class LinearAxis(Axis):
         Axis.__init__(self, name, origin, shape_type)
         self.shape = Rectangle(dimensions[0], dimensions[1], dimensions[2])
 
-        self.update_coordinates(dimensions)
+        self.initialize_shape()
 
     def on_event(self, event_type, event_name, data):
         if event_type == "translate_event":
-            self.update_origin(data)
+            self.update_coordinates(data)
 
     def update_origin(self, xyz):
         for i, dimension in enumerate(self.origin):
@@ -42,3 +42,26 @@ class LinearAxis(Axis):
             self.coordinates[i][1] += xyz[1]
             self.coordinates[i][2] += xyz[2]
 
+    def initialize_shape(self):
+        x       = self.origin[0]
+        y       = self.origin[1]
+        z       = self.origin[2]
+        depth   = self.shape.depth
+        width   = self.shape.width
+        height  = self.shape.height
+
+        self.coordinates.append(self.origin)
+        self.coordinates.append([x, y, z + height])
+        #  point 1 = originx, originy z+height
+        self.coordinates.append([x, y + width, z + height])
+        #  point 2 = originx, y + width, z+height
+        self.coordinates.append([x, y + width, z])
+        #  point 3 = originx, y + width, originz
+        self.coordinates.append([x + depth, y, z])
+        #  point 4 = x + depth, originy, originz
+        self.coordinates.append([x + depth, y, z + height])
+        #  point 5 = x + depth, originy, z + height
+        self.coordinates.append([x + depth, y + width, z + height])
+        #  point 6 = x + depth, y + width, z + height
+        self.coordinates.append([x + depth, y + width, z])
+        #  point 7 = x + depth, y + width, originz
