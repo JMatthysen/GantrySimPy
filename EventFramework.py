@@ -20,6 +20,8 @@ class EventBus:
     def _initialize_events(self):
         self.add_event("translation_event")
         self.add_event("position_change_event")
+        self.add_event("view_screen_translation_event")
+        self.add_event("view_screen_rotation_event")
 
     def post_event(self, event_name, data):
         #  a publisher will use this to declare that an event has occured
@@ -63,8 +65,9 @@ class EventBus:
 
     @staticmethod
     def _error_message(error_message):
-        print(error_message)
-"""
+        # print(error_message)
+        pass
+"""     
 
 event_handler base class to ensure all subscribers have .on_event() function
 

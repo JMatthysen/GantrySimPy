@@ -11,6 +11,25 @@ class Entity:
         self.color  = color
 
 
+class Entity3D(Entity):
+    def __init__(self, axis, color):
+        Entity.__init__(self, axis, color)
+
+        self.sides = list(list())
+        self.color_border = [255, 255, 255, 255]
+
+        self._initialize_sides()
+
+    def _initialize_sides(self):
+        self.sides.append([0, 1, 2, 3, 0])
+        self.sides.append([0, 1, 5, 4, 0])
+        self.sides.append([0, 3, 7, 4, 0])
+
+        self.sides.append([6, 7, 4, 5, 6])
+        self.sides.append([6, 7, 3, 2, 6])
+        self.sides.append([6, 5, 1, 2, 6])
+
+
 class CanvasView(EventHandler):
     def __init__(self, name, axes, width, height, parent, event_bus):
         self.name       = name
@@ -29,14 +48,28 @@ class CanvasView(EventHandler):
         if event_name == "position_change_event":
             self._update_drawing_event()
 
+        elif event_name == "view_screen_translation_event":
+            self._translate_view_screen(data)
+
+        elif event_name == "view_screen_rotation_event":
+            self._rotate_view_screen()
+
     def _initialize_subscriptions(self):
         self.subscribe(self.event_bus, "position_change_event")
+        self.subscribe(self.event_bus, "view_screen_translation_event")
+        self.subscribe(self.event_bus, "view_screen_rotation_event")
 
     def subscribe(self, event_bus, event_name):
         event_bus.subscribe(self, event_name)
 
     def _update_drawing_event(self):
         self._refresh_canvas()
+
+    def _translate_view_screen(self, data):
+        pass
+
+    def _rotate_view_screen(self, data):
+        pass
 
     def _initialize_canvas(self):
         add_drawing(self.name, parent=self.parent, width=self.width, height=self.height)
@@ -133,11 +166,20 @@ class GUIWindow:
 
     def _initialize_gui(self):
         with window(self.name, width=self.width, height=self.height):
+
+            with group("controls_row", width=800, horizontal=True):
+                pass
             self._add_sliders()
+            self._add_view_screen_controls()
             with group("canvas_row", horizontal=True):
                 pass
 
     def _add_sliders(self):
-        with group("slider_group", parent=self.name):
+        with group("slider_group", parent="controls_row", width=100):
             for i in range(3):
-                add_slider_float(f"slider_{i}", min_value=-10, max_value=10)
+                add_slider_float(f"slider_{i}", min_value=-10, max_value=10, width=50)
+
+    def _add_view_screen_controls(self):
+        with group("view_port_controls", parent="controls_row", width=100):
+            for i in range(3):
+                add_slider_float(f"view_screen_control_{i}", min_value=-10, max_value=10, width=50 )
